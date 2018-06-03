@@ -2,51 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnoherPlayerControl : MonoBehaviour {
+public class AnotherPlayerControl : MonoBehaviour
+{
     //水平移动
     public float maxSpeed = 5f;
     public float moveForce = 365f;
-    [HideInInspector]public bool bFaceright = true;
+    [HideInInspector] public bool bFaceright = true;
     //跳跃
     public float jumpForce = 1000f;
     public Transform mGroundCheck;
     private bool grounded = false;
-    private bool bJump = false;
+    public bool bJump = false;
     private Animator anim;
     // 动画
     /*public AudioClip[] jumpClips;
     private Animator anim;*/
 
     private Rigidbody2D herobody;
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         herobody = GetComponent<Rigidbody2D>();
         mGroundCheck = transform.Find("groundObject");
         anim = GetComponent<Animator>();
 
     }
-	void FixedUpdate()
+    void FixedUpdate()
     {
         float h = Input.GetAxis("Horizontal");
         anim.SetFloat("speed", Mathf.Abs(h));
-        if ( h * herobody.velocity.x < maxSpeed )
+        if (h * herobody.velocity.x < maxSpeed)
         {
             herobody.AddForce(Vector2.right * h * moveForce);
 
         }
-        if(Mathf.Abs(herobody.velocity.x) > maxSpeed)
+        if (Mathf.Abs(herobody.velocity.x) > maxSpeed)
         {
             herobody.velocity = new Vector2(Mathf.Sign(herobody.velocity.x) * maxSpeed, herobody.velocity.y);
         }
-        if(h>0 && !bFaceright)
+        if (h > 0 && !bFaceright)
         {
             flip();
         }
-        if(h<0 && bFaceright)
+        if (h < 0 && bFaceright)
         {
             flip();
         }
-        if(bJump)
+        if (bJump)
         {
             /*anim.SetTrigger("Jump");
 
@@ -59,13 +61,14 @@ public class AnoherPlayerControl : MonoBehaviour {
         }
     }
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         grounded = Physics2D.Linecast(transform.position, mGroundCheck.position, 1 << LayerMask.NameToLayer("ground"));
-        if(grounded && Input.GetButtonDown("Jump"))
+        if (grounded && Input.GetButtonDown("Jump"))
         {
             bJump = true;
         }
-	}
+    }
     void flip()
     {
         bFaceright = !bFaceright;

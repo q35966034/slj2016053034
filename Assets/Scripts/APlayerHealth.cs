@@ -11,18 +11,15 @@ public class APlayerHealth : MonoBehaviour {
     private SpriteRenderer healthBar;
     private float lastHitTime;
     private Vector3 healthScale;
-    private PlayerControl playerControl;
+    private Component playerControl;
     private Animator anim;	
 	// Use this for initialization
 	void Start() {
-		playerControl = GetComponent<PlayerControl>();
+		playerControl = GetComponent<AnoherPlayerControl>();
         healthBar = GameObject.Find("HealthBar").GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-
         healthScale = healthBar.transform.localScale;
 	}
-	
-	
     //碰撞检测
     void OnCollisionEnter2D(Collision2D col)
     {
@@ -53,10 +50,8 @@ public class APlayerHealth : MonoBehaviour {
                     foreach(SpriteRenderer s in spr)
                     {
                         s.sortingLayerName = "UI";
-                    }
-                    //兄弟，死人可不会动
+                    }                  
                     GetComponent<PlayerControl>().enabled = false;
-                    //兄弟，死人可不能开炮
                     GetComponentInChildren<Gun>().enabled = false;
                     anim.SetTrigger("Die");
                 }
@@ -64,8 +59,6 @@ public class APlayerHealth : MonoBehaviour {
         }
     }
 	void TakeDamage(Transform enemy) {
-        //受伤时，角色不能进行跳跃
-        playerControl.jump = false;
         //创建一个从敌人到玩家的向量
         Vector3 hurtVector = transform.position - enemy.position + Vector3.up * 5f;
         //在向量的方向对玩家加力
@@ -74,10 +67,9 @@ public class APlayerHealth : MonoBehaviour {
         health -= damageAmount;
         //缩短血条
         UpdateHealthBar();
-        //随机发出惨叫 “啊” “哦” “痛”~~~~~~~—.—#~~~~~~~
+        //随机发出惨叫 “啊” “哦” “痛”
         int i = Random.Range(0, ouchClips.Length);
         AudioSource.PlayClipAtPoint(ouchClips[i], transform.position);
-
 	}
     public void UpdateHealthBar()
     {
